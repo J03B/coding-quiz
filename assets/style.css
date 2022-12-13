@@ -21,16 +21,69 @@
     element styles
 */
 
-
+body {
+    min-height: 100%;
+    line-height: 1;
+    font-family: "Calibri", "Candara", Arial, Verdana, sans-serif;
+}
 
 /* Heading and navigation bar */
 
+header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background-image: linear-gradient(var(--medium) 0%, var(--dark) 100%);
+}
 
+h1 {
+    padding: 1% 1% 1% 8%;
+    font-size: 500%;
+    background-color: var(--light);
+    color: var(--dark);
+    margin: 2% 2% 2% 0;
+    border-radius: 0 4px 4px 0;
+}
 
+nav {
+    width: 40%;
+    justify-content: space-evenly;
+    display: flex;
+    align-items: baseline;
+}
+
+header a {
+    font-size: 125%;
+    color: var(--light);
+    padding: 2%;
+    text-decoration: none;
+    border-bottom: solid var(--light);
+}
+
+header p {
+    font-size: 125%;
+    color: var(--light);
+}
 
 /* footer stylization */
 
+footer {
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+    color: var(--light);
+    text-align: center;
+    background-color: var(--dark);
+    padding: 2%;
+    background-image: linear-gradient(
+        var(--dark) 0%,
+        var(--medium) 100% );
+}
 
+footer h3 {
+    font-size: 200%;
+}
 
 /*
     class styles
