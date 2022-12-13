@@ -1,0 +1,51 @@
+:root {
+    --white: #fff;
+    --light: #92CCCD;
+    --lightShadow: #29627e;
+    --medium: #445876;
+    --dark: #31343D;
+    --workWidth: 45%;
+}
+
+/*
+    global styles
+*/
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/*
+    element styles
+*/
+
+
+
+/* Heading and navigation bar */
+
+
+
+
+/* footer stylization */
+
+
+
+/*
+    class styles
+*/
+
+
+
+
+/* 
+    Style changes for interactive behavior
+*/
+
+
+
+
+/* 
+    Style changes relative to screen size
+*/
