@@ -4,13 +4,15 @@ var question = document.querySelector(".question");
 var subtext = document.querySelector(".subtext");
 var result = document.querySelector(".result");
 var startQuizBtn = document.getElementById("sq");
+var choiceBtn = document.querySelectorAll(".choice");
 var choices = ["c1","c2","c3","c4"]
-var timeLeft = 60;
+var timeLeft = 90;
 let curQIndex = 0;
+let userScore = 0;
 
 // Setting initial home screen to remove placeholders
 question.innerHTML = "Welcome to J03B's Coding Quiz Challenge";
-subtext.innerHTML = "Try to answer as many of the following code-related questions within the time limit. Keep in mind that incorrect answers will penalize your score/time by ten seconds.";
+subtext.innerHTML = "Try to answer as many of the following code-related questions within the time limit. Keep in mind that incorrect answers will penalize your score/time by five seconds.";
 result.innerHTML = "";
 startQuizBtn.innerHTML = "Start Quiz";
 for (let i = 0; i < choices.length; i++) {
@@ -50,29 +52,45 @@ function nextQuestion(que,cho) {
     result.innerHTML = "";
 }
 
-// Event Listener for when the user answers a question
-function answerQuestion() {
+// Function for when the user answers a question
+function answerQuestion(queIndex,choDN) {
+    let choiceIndex = choDN - 1;
+    let correctChoice = choiceOrder.indexOf(resultArray[queIndex]);
+    let answerTime = 3; // 1.5 seconds
+    console.log(choiceIndex + " " + correctChoice);
 
+    if (choiceIndex == correctChoice) {
+        result.innerHTML = "Correct!";
+        userScore++;
+    } else {
+        result.innerHTML = "Wrong!";
+        timeLeft -= 5;
+    }
+}
+
+// Function to delay switching to the next question by 1.5 seconds
+function delay() {
+    return new Promise(resolve => setTimeout(resolve, 1500));
 }
 
 // START OF QUIZ EVENT LISTENER
-var startQuiz = document.getElementById("sq");
-startQuiz.addEventListener("click", function () {
+//var startQuiz = document.getElementById("sq");
+startQuizBtn.addEventListener("click", function () {
     startTimer();
     startQuizBtn.style.display = "none";
     subtext.style.display = "none";
-
-    // Run through a loop of the questions
-    while (timeLeft > 0) {
-        let nextQ = questionArray[curQIndex];
-        nextQuestion(nextQ,choicesArray[curQIndex]);
-        
-        let userChoice = 0;
-        answerQuestion();
-    }
+    nextQuestion(questionArray[curQIndex],choicesArray[curQIndex]);
 });
 
-
+// Adding event listener for when the user answers a question
+choiceBtn.forEach(function(cBtn) {
+    cBtn.addEventListener("click", function() {
+        var choice = this.getAttribute("data-number");
+        answerQuestion(curQIndex,choice);
+        curQIndex++;
+        delay().then(() => nextQuestion(questionArray[curQIndex],choicesArray[curQIndex]));
+    });
+});
 
 
 
