@@ -100,7 +100,7 @@ footer h3 {
     flex-direction: column;
     justify-items: center;
     align-items: flex-start;
-    padding: 5% 30% 5% 30%;
+    padding: 5% 25% 5% 25%;
 }
 
 .question {
@@ -158,15 +158,19 @@ footer h3 {
     h1 {
         font-size: 375%;
     }
+
+    .quiz {
+        padding: 5% 20% 5% 20%;
+    }
 }
 
 @media (max-width:992px) {
     h1 {
         font-size: 300%;
     }
-
-    .quiz {
-        padding: 5% 20% 5% 20%;
+    
+    .question {
+        font-size: 150%;
     }
 }
 

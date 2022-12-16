@@ -55,15 +55,22 @@ function startTimer() {
 }
 
 // Shuffle questions function
-function nextQuestion(que,cho) {
-    question.innerHTML = que;
-    for (let i = 0; i < 4; i++) {
-        const cID = choices[i];
-        let choEl = document.getElementById(cID);
-        choEl.innerHTML = cho[i];
-        choEl.style.visibility = "visible";
+function nextQuestion(inIndex) {
+    if (inIndex < allChoices.length) {
+        var que = allQuestions[inIndex];
+        var cho = allChoices[inIndex];
+        question.innerHTML = que;
+        for (let i = 0; i < 4; i++) {
+            const cID = choices[i];
+            let choEl = document.getElementById(cID);
+            choEl.innerHTML = cho[i];
+            choEl.style.visibility = "visible";
+        }
+        result.innerHTML = "";
     }
-    result.innerHTML = "";
+    else {
+        result.innerHTML = "nice try...";
+    }
 }
 
 // Function for when the user answers a question
@@ -91,7 +98,7 @@ startQuizBtn.addEventListener("click", function () {
     startTimer();
     startQuizBtn.style.display = "none";
     subtext.style.display = "none";
-    nextQuestion(questionArray[curQIndex],choicesArray[curQIndex]);
+    nextQuestion(curQIndex);
 });
 
 // Adding event listener for when the user answers a question
@@ -101,7 +108,8 @@ choiceBtn.forEach(function(cBtn) {
         answerQuestion(curQIndex,choice);
         curQIndex++;
         if (curQIndex < questionArray.length) {
-            delay(1200).then(() => nextQuestion(questionArray[curQIndex],choicesArray[curQIndex]));    
+            // Note - if the user spams the MC buttons, the delay will cause an error in the console 
+            delay(1200).then(() => nextQuestion(curQIndex));
         }
         else {
             timeLeft = 0;
