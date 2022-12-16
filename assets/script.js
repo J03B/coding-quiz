@@ -14,6 +14,10 @@ let userScore = 0;
 
 // Setting initial home screen to remove placeholders
 function initializeScreen() {
+    timeLeft = 90;
+    curQIndex = 0;
+    userScore = 0;
+    startQuizBtn.style.display = "block";
     question.innerHTML = "Welcome to J03B's Coding Quiz Challenge";
     subtext.innerHTML = "Try to answer as many of the following code-related questions within the time limit. Keep in mind that incorrect answers will penalize your score/time by five seconds.";
     result.innerHTML = "";
@@ -74,8 +78,8 @@ function answerQuestion(queIndex,choDN) {
 }
 
 // Function to delay switching to the next question by 1.5 seconds
-function delay() {
-    return new Promise(resolve => setTimeout(resolve, 1500));
+function delay(dt) {
+    return new Promise(resolve => setTimeout(resolve, dt));
 }
 
 // START OF QUIZ EVENT LISTENER
@@ -93,14 +97,20 @@ choiceBtn.forEach(function(cBtn) {
         var choice = this.getAttribute("data-number");
         answerQuestion(curQIndex,choice);
         curQIndex++;
-        delay().then(() => nextQuestion(questionArray[curQIndex],choicesArray[curQIndex]));
+        if (curQIndex < questionArray.length) {
+            delay(1200).then(() => nextQuestion(questionArray[curQIndex],choicesArray[curQIndex]));    
+        }
+        else {
+            timeLeft = 0;
+            endGame();
+        }
     });
 });
 
 // END OF QUIZ - SUBMIT SCORE EVENT LISTENER
 function endGame() {
     question.innerHTML = "TIME'S UP!!!"
-    delay().then(() => question.innerHTML = "TIME'S UP!!!"); // In case the user was spamming the choice buttons
+    delay(800).then(() => question.innerHTML = "TIME'S UP!!!"); // In case the user was spamming the choice buttons
     subtext.innerHTML = "Your final score is " + userScore;
     subtext.style.display = "block";
     result.innerHTML = "";
@@ -108,22 +118,39 @@ function endGame() {
         const cID = choices[i];
         document.getElementById(cID).style.display = "none";
     }
+    document.getElementById("scores").style.visibility = "visible";
     document.getElementById("submit-score").style.display = "block";
+    submitBtn.style.visibility = "visible";
+    renderHighScores();
 }
 
 // Event listener for initials submission
 submitBtn.addEventListener("click", function() {
+    submitBtn.style.visibility = "hidden";
     var userData = {
         userInitials: initialsInput.value,
         quizScore: userScore
     };
-    localStorage.setItem("scoring", JSON.stringify(userData));
+
+    // Update local storage then save it all
+    var allScores = JSON.parse(localStorage.getItem("scoring")) || [];
+    allScores.push(userData);
+    localStorage.setItem("scoring", JSON.stringify(allScores));
     initialsInput.value = "";
     renderHighScores();
+    delay(5000).then(() => initializeScreen());
 });
+
+// Clear scores to then render them again
+function removeAllChildNodes(parent) {
+    while (parent.firstChild) {
+        parent.removeChild(parent.firstChild);
+    }
+}
 
 // render the high scores for the high scores list
 function renderHighScores() {
+    removeAllChildNodes(document.getElementById("scores"));
     var lastScores = JSON.parse(localStorage.getItem("scoring"));
     if (lastScores !== null) {
         for (let i = 0; i < lastScores.length; i++) {
@@ -134,4 +161,3 @@ function renderHighScores() {
         }
     }
 }
-renderHighScores();
