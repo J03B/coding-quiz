@@ -1,4 +1,4 @@
-// Setting document variables for text editing sections
+// Setting document variables for text editing/interactive sections
 var timeLeftEl = document.querySelector(".time");
 var question = document.querySelector(".question");
 var subtext = document.querySelector(".subtext");
@@ -7,14 +7,16 @@ var startQuizBtn = document.getElementById("sq");
 var choiceBtn = document.querySelectorAll(".choice");
 var submitBtn = document.querySelector(".submit-btn");
 var initialsInput = document.querySelector(".form-input");
+var viewHS = document.querySelector(".view-highscores");
+var scoresEl = document.getElementById("scores");
+var submitScoreEl = document.getElementById("submit-score");
 var choices = ["c1","c2","c3","c4"];
-var timeLeft = 90;
+var timeLeft = 0;
 let curQIndex = 0;
 let userScore = 0;
 
 // Setting initial home screen to remove placeholders
 function initializeScreen() {
-    timeLeft = 90;
     curQIndex = 0;
     userScore = 0;
     startQuizBtn.style.display = "block";
@@ -22,7 +24,7 @@ function initializeScreen() {
     subtext.innerHTML = "Try to answer as many of the following code-related questions within the time limit. Keep in mind that incorrect answers will penalize your score/time by five seconds.";
     result.innerHTML = "";
     startQuizBtn.innerHTML = "Start Quiz";
-    document.getElementById("submit-score").style.display = "none";
+    submitScoreEl.style.display = "none";
     for (let i = 0; i < choices.length; i++) {
         const cID = choices[i];
         document.getElementById(cID).style.display = "flex";
@@ -85,6 +87,7 @@ function delay(dt) {
 // START OF QUIZ EVENT LISTENER
 //var startQuiz = document.getElementById("sq");
 startQuizBtn.addEventListener("click", function () {
+    timeLeft = 90;
     startTimer();
     startQuizBtn.style.display = "none";
     subtext.style.display = "none";
@@ -118,8 +121,12 @@ function endGame() {
         const cID = choices[i];
         document.getElementById(cID).style.display = "none";
     }
-    document.getElementById("scores").style.visibility = "visible";
-    document.getElementById("submit-score").style.display = "block";
+    // Ensure the proper elements are visible (in case of 'View Highscores' selection)
+    submitScoreEl.firstElementChild.style.display = "flex";
+    document.querySelector(".form-input").style.display = "flex";
+    submitBtn.style.display = "flex";
+    scoresEl.style.visibility = "visible";
+    submitScoreEl.style.display = "block";
     submitBtn.style.visibility = "visible";
     renderHighScores();
 }
@@ -150,7 +157,7 @@ function removeAllChildNodes(parent) {
 
 // render the high scores for the high scores list
 function renderHighScores() {
-    removeAllChildNodes(document.getElementById("scores"));
+    removeAllChildNodes(scoresEl);
     var lastScores = JSON.parse(localStorage.getItem("scoring"));
     if (lastScores !== null) {
         for (let i = 0; i < lastScores.length; i++) {
@@ -161,3 +168,28 @@ function renderHighScores() {
         }
     }
 }
+
+// Event listener for viewing all submitted highscores
+viewHS.addEventListener("click", function() {
+    if (timeLeft > 1) {
+        result.innerHTML = "You're taking a quiz! You can't view highscores right now!";
+    }
+    else {
+        // ensure that all the proper elements are hidden/displayed
+        for (let i = 0; i < choices.length; i++) {
+            const cID = choices[i];
+            document.getElementById(cID).style.display = "none";
+        }
+        startQuizBtn.style.display = "none";
+        question.innerHTML = "High Scores!";
+        subtext.innerHTML = "Try taking the quiz to add yourself to the leaderboard.";
+        submitScoreEl.style.display = "block";
+        submitScoreEl.firstElementChild.style.display = "none";
+        document.querySelector(".form-input").style.display = "none";
+        submitBtn.style.display = "none";
+        scoresEl.style.display = "block";
+        scoresEl.style.visibility = "visible";
+        renderHighScores();
+        delay(5000).then(() => initializeScreen());
+    }
+});
